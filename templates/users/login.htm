@@ -1,0 +1,46 @@
+{% extends "orders/base.htm" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+
+    <!--- ====  AUTOFILL SCRIPTS ==== -->
+    <script>
+        function fillUsername() {
+                document.getElementById('username').value = document.getElementById('email').value;    
+        }
+
+        function fillPassword() {
+                document.getElementById('password').value = document.getElementById('password1').value;    
+        }
+    </script>
+
+    <section id="book-table">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-4 col-md-4">
+                    <div class="right-info-login">
+                        <h4>Login</h4>
+                        <form id="form-submit" action="" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                {{ form|crispy }}
+                                
+                                <div class="col-md-12">
+                                    <fieldset>
+                                        <button type="submit" id="form-submit" class="btn btn-success">LOGIN</button>
+                                    </fieldset>
+                                    <br><br>
+                                </div>
+
+                              </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock content %}

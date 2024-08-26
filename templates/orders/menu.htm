@@ -1,0 +1,866 @@
+{% extends "orders/base.htm" %}
+{% load static %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="http://static.sasongsmat.nu/fonts/vegetarian.css" />
+
+    <section class="page-heading">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Select Items</h1>
+                    <p>Click on "ADD TO CART" to your Order. Please click on "FINALIZE" to confirm your Order.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="locations" class="row">
+        <input type="radio" id="btRadio" value="btCheckbox" name="location-radio">
+        <label for="btRadio" class="col-md-3">
+            <div>
+                <div class="location" id="btLabel">
+                    <img src="http://127.0.0.1:8000/static/Picturea/bot-tola.jpeg" alt="" height="300">
+                    <div class="text-content">
+                        <h4 name="location_name">বটতলা</h4>
+                    </div>
+                </div>
+            </div>
+        </label>
+        <input type="radio" id="pgRadio" value="pgRadio" name="location-radio">
+        <label for="pgRadio" class="col-md-3">
+            <div>
+                <div class="location" id="pgLabel">
+                    <img src="http://127.0.0.1:8000/static/Picturea/prantik-gate.jpeg" alt="" height="300">
+                    <div class="text-content">
+                        <h4 name="location_name">প্রান্তিক গেইট</h4>
+                    </div>
+                </div>
+            </div>
+        </label>
+        <input type="radio" id="ddRadio" value="ddRadio" name="location-radio">
+        <label for="ddRadio" class="col-md-3" >
+            <div>
+                <div class="location" id="ddLabel">
+                    <img src="http://127.0.0.1:8000/static/Picturea/romjan.jpg" alt="" height="300">
+                    <div class="text-content">
+                        <h4 name="location_name">ডিপার্টমেন্টের দোকান</h4>
+                    </div>
+                </div>
+            </div>
+        </label>
+
+        <input type="radio" id="mrRadio" value="mrRadio" name="location-radio">
+        <label for="mrRadio" class="col-md-3">
+            <div>
+                <div class="location" id="mrLabel">
+                    <img src="http://127.0.0.1:8000/static/Picturea/tarzan-point.png" alt="" height="300">
+                    <div class="text-content">
+                        <h4 name="location_name">অন্যান্য</h4>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+
+    <button class="btn btn-primary showLocationBtn" onclick="ShowLocationMenu()">Show menu of the selected location</button>
+
+    <form id="form-submit" action="" method="POST" enctype="multipart/form-data">
+    <div class="row">
+        <div id="orderForm">
+            <i class="bi bi-cart"></i><h3>Cart</h3>
+            <h4>Order # {{ order.id }}</h4>
+                <ul>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th style="text-align: center;">Item name</th>
+                            <th style="text-align: center;">Shop name</th>
+                            <th style="text-align: center;">Ordered Quantity</th>
+                            <th style="text-align: center;">Rate(Tk)</th>
+                        </thead>
+                        {% for oitem in ordered_items %}
+                        <tr>
+                            <td>{{ oitem.item.name }}</td>
+                            <td>{{ oitem.item.shop.name }}</td>
+                            <td>{{ oitem.quantity }}</td>
+                            <td>{{ oitem.item.rate }}</td>
+                        </tr>
+                        {% empty %}
+                        <li>No items added to order yet!</li><br>
+                        {% endfor %}
+                    </table>
+                </ul>
+                
+                <br>
+
+                {% csrf_token %}
+                <div class="col-md-12">
+                    <fieldset>
+                        <a href="{% url 'add_items' order.id %}"><button class="btn btn-info " style="width: 200px; margin-bottom: 10px;">ADD TO CART</button></a>
+                    </fieldset>
+                </div>
+
+                <div class="col-md-12">
+                    <fieldset>
+                        <a href="{% url 'finalize_order' order.id %}" class="btn btn-primary " style="width: 200px; margin-bottom: 10px;">FINALIZE</a>
+                    </fieldset>
+                </div>
+
+                <div class="col-md-12">
+                    <fieldset>
+                        <a href="{% url 'delete_order' order.id %}" class="btn btn-danger " style="width: 200px; margin-bottom: 10px;">CANCEL ORDER</a>
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row menuTables">
+    <div class="col-md-10 col-md-offset-1"> 
+        <section class="breakfast-menu" id="category-selector">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="breakfast-menu-content">
+                        <p>Filter by Category &nbsp;&nbsp;</p>
+                        <input type="radio" name="categories" id="VV"  value="VV">
+                        <label for="VV">ভাত-তরকারি</label>
+                        <input type="radio" name="categories" id="SF"  value="SF">
+                        <label for="SF">স্ট্রিট ফুড</label>
+                        <input type="radio" name="categories" id="FF"  value="FF">
+                        <label for="FF">ফাস্টফুড</label>
+                        <input type="radio" name="categories" id="TF"  value="TF">
+                        <label for="TF">টং এর দোকান</label>
+                        <input type="radio" name="categories" id="OF" value="OF">
+                        <label for="OF">অন্যান্য</label>
+                        &nbsp;&nbsp;
+                        <div class="btn btn-primary" onclick="filterFunctions()">Filter</div>
+                        
+                        {% if user.is_superuser %}
+                        <a href="{% url 'create_item' %}"><button class="btn btn-info">Create New Item</button></a>
+                        {% endif %}
+                    </div>    
+                </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- --------Bot tola--------->
+        <!-- General -->
+        <div id="general-menu-bt" class="menuTables">
+            {% for shop_name in bt_shops %}
+                <section class="breakfast-menu">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="breakfast-menu-content">
+                                    <div class="row">
+                                        
+                                        <div class="col-md-12" style="overflow-x: scroll;">
+                                            <h2>{{ shop_name }}</h2>
+    
+                                                {% for item in all_items %}
+                                                    {% if item.shop.name == shop_name %}
+                                                        <div class="food-item col-md-4">
+                                                            <div class="food-item">
+                                                                <img src="{{ item.image.url }}" alt="">
+                                                                <div class="price">Tk. {{ item.rate }}</div>
+                                                                <div class="text-content">
+                                                                    <p>{{ item.rating }}/5 Stars</p>
+                                                                
+                                                                    <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                    <p>{{ item.description }}</p>
+                                                                    <p>Available stock: {{ item.stock }}</p>
+    
+                                                                    <div class="col-md-12">
+                                                                        <fieldset>
+                                                                            <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                        </fieldset>
+                                                                    </div>
+    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                {% endfor %}
+        </div>
+
+        {% for cat in categories %}
+            <div id="{{ cat }}-menu-bt" class="menuTables">
+                {% for shop_name in bt_shops %}
+                    <section class="breakfast-menu">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="breakfast-menu-content">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-12" style="overflow-x: scroll;">
+                                                <h2>{{ shop_name }}</h2>
+        
+                                                    {% for item in all_items %}
+                                                        {% if item.shop.name == shop_name and item.category.lower == cat %}
+                                                            <div class="food-item col-md-4">
+                                                                <div class="food-item">
+                                                                    <img src="{{ item.image.url }}" alt="">
+                                                                    <div class="price">Tk. {{ item.rate }}</div>
+                                                                    <div class="text-content">
+                                                                        <p>{{ item.rating }}/5 Stars</p>
+                                                                    
+                                                                        <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                        <p>{{ item.description }}</p>
+                                                                        <p>Available stock: {{ item.stock }}</p>
+        
+                                                                        <div class="col-md-12">
+                                                                            <fieldset>
+                                                                                <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                            </fieldset>
+                                                                        </div>
+        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        
+
+        <!-- --------Prantik gate--------->
+        <!-- General -->
+        <div id="general-menu-pg" class="menuTables">
+            {% for shop_name in pg_shops %}
+                <section class="breakfast-menu">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="breakfast-menu-content">
+                                    <div class="row">
+                                        
+                                        <div class="col-md-12" style="overflow-x: scroll;">
+                                            <h2>{{ shop_name }}</h2>
+    
+                                                {% for item in all_items %}
+                                                    {% if item.shop.name == shop_name %}
+                                                        <div class="food-item col-md-4">
+                                                            <div class="food-item">
+                                                                <img src="{{ item.image.url }}" alt="">
+                                                                <div class="price">Tk. {{ item.rate }}</div>
+                                                                <div class="text-content">
+                                                                    <p>{{ item.rating }}/5 Stars</p>
+                                                                
+                                                                    <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                    <p>{{ item.description }}</p>
+                                                                    <p>Available stock: {{ item.stock }}</p>
+    
+                                                                    <div class="col-md-12">
+                                                                        <fieldset>
+                                                                            <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                        </fieldset>
+                                                                    </div>
+    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+        {% for cat in categories %}
+            <div id="{{ cat }}-menu-pg" class="menuTables">
+                {% for shop_name in pg_shops %}
+                    <section class="breakfast-menu">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="breakfast-menu-content">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-12" style="overflow-x: scroll;">
+                                                <h2>{{ shop_name }}</h2>
+        
+                                                    {% for item in all_items %}
+                                                        {% if item.shop.name == shop_name and item.category.lower == cat %}
+                                                            <div class="food-item col-md-4">
+                                                                <div class="food-item">
+                                                                    <img src="{{ item.image.url }}" alt="">
+                                                                    <div class="price">Tk. {{ item.rate }}</div>
+                                                                    <div class="text-content">
+                                                                        <p>{{ item.rating }}/5 Stars</p>
+                                                                    
+                                                                        <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                        <p>{{ item.description }}</p>
+                                                                        <p>Available stock: {{ item.stock }}</p>
+        
+                                                                        <div class="col-md-12">
+                                                                            <fieldset>
+                                                                                <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                            </fieldset>
+                                                                        </div>
+        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        
+
+        <!-- --------department er dokan--------->
+        <!-- General -->
+        <div id="general-menu-dd" class="menuTables">
+            {% for shop_name in dd_shops %}
+                <section class="breakfast-menu" name="VV">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="breakfast-menu-content">
+                                    <div class="row">
+                                        
+                                        <div class="col-md-12" style="overflow-x: scroll;">
+                                            <h2>{{ shop_name }}</h2>
+    
+                                                {% for item in all_items %}
+                                                    {% if item.shop.name == shop_name %}
+                                                        <div class="food-item col-md-4">
+                                                            <div class="food-item">
+                                                                <img src="{{ item.image.url }}" alt="">
+                                                                <div class="price">Tk. {{ item.rate }}</div>
+                                                                <div class="text-content">
+                                                                    <p>{{ item.rating }}/5 Stars</p>
+                                                                
+                                                                    <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                    <p>{{ item.description }}</p>
+                                                                    <p>Available stock: {{ item.stock }}</p>
+    
+                                                                    <div class="col-md-12">
+                                                                        <fieldset>
+                                                                            <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                        </fieldset>
+                                                                    </div>
+    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+        {% for cat in categories %}
+            <div id="{{ cat }}-menu-dd" class="menuTables">
+                {% for shop_name in dd_shops %}
+                    <section class="breakfast-menu">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="breakfast-menu-content">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-12" style="overflow-x: scroll;">
+                                                <h2>{{ shop_name }}</h2>
+        
+                                                    {% for item in all_items %}
+                                                        {% if item.shop.name == shop_name and item.category.lower == cat %}
+                                                            <div class="food-item col-md-4">
+                                                                <div class="food-item">
+                                                                    <img src="{{ item.image.url }}" alt="">
+                                                                    <div class="price">Tk. {{ item.rate }}</div>
+                                                                    <div class="text-content">
+                                                                        <p>{{ item.rating }}/5 Stars</p>
+                                                                    
+                                                                        <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                        <p>{{ item.description }}</p>
+                                                                        <p>Available stock: {{ item.stock }}</p>
+        
+                                                                        <div class="col-md-12">
+                                                                            <fieldset>
+                                                                                <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                            </fieldset>
+                                                                        </div>
+        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <!-- --------onnano--------->
+        <!-- General -->
+        <div id="general-menu-mr" class="menuTables">
+            {% for shop_name in mr_shops %}
+                <section class="breakfast-menu" name="VV">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="breakfast-menu-content">
+                                    <div class="row">
+                                        
+                                        <div class="col-md-12" style="overflow-x: scroll;">
+                                            <h2>{{ shop_name }}</h2>
+    
+                                                {% for item in all_items %}
+                                                    {% if item.shop.name == shop_name %}
+                                                        <div class="food-item col-md-4">
+                                                            <div class="food-item">
+                                                                <img src="{{ item.image.url }}" alt="">
+                                                                <div class="price">Tk. {{ item.rate }}</div>
+                                                                <div class="text-content">
+                                                                    <p>{{ item.rating }}/5 Stars</p>
+                                                                
+                                                                    <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                    <p>{{ item.description }}</p>
+                                                                    <p>Available stock: {{ item.stock }}</p>
+    
+                                                                    <div class="col-md-12">
+                                                                        <fieldset>
+                                                                            <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                        </fieldset>
+                                                                    </div>
+    
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            {% endfor %}
+            </div>
+            {% for cat in categories %}
+            <div id="{{ cat }}-menu-mr" class="menuTables">
+                {% for shop_name in mr_shops %}
+                    <section class="breakfast-menu">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="breakfast-menu-content">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-12" style="overflow-x: scroll;">
+                                                <h2>{{ shop_name }}</h2>
+        
+                                                    {% for item in all_items %}
+                                                        {% if item.shop.name == shop_name and item.category.lower == cat %}
+                                                            <div class="food-item col-md-4">
+                                                                <div class="food-item">
+                                                                    <img src="{{ item.image.url }}" alt="">
+                                                                    <div class="price">Tk. {{ item.rate }}</div>
+                                                                    <div class="text-content">
+                                                                        <p>{{ item.rating }}/5 Stars</p>
+                                                                    
+                                                                        <h4 name="item_name">{{ item.name }} &nbsp;  {% if not item.is_non_veg %}<span class="veg-indian-vegetarian" style="color: red;"></span>{% endif %}</h4>
+                                                                        <p>{{ item.description }}</p>
+                                                                        <p>Available stock: {{ item.stock }}</p>
+        
+                                                                        <div class="col-md-12">
+                                                                            <fieldset>
+                                                                                <input name="{{ item.id }}" type="number" class="form-control" id="{{ item.id }}" placeholder="Quantity" max="5" min="1" max="{{ item.stock }}" >
+                                                                            </fieldset>
+                                                                        </div>
+        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        </div>
+    </div>
+    </form>
+
+    <script>
+        document.getElementById("general-menu-bt").style.display = "none";
+        document.getElementById("general-menu-pg").style.display = "none";
+        document.getElementById("general-menu-dd").style.display = "none";
+        document.getElementById("general-menu-mr").style.display = "none";
+        document.getElementById("category-selector").style.display = "none";
+
+        document.getElementById("vv-menu-bt").style.display = "none";
+        document.getElementById("sf-menu-bt").style.display = "none";
+        document.getElementById("tf-menu-bt").style.display = "none";
+        document.getElementById("of-menu-bt").style.display = "none";
+        document.getElementById("ff-menu-bt").style.display = "none";
+
+        document.getElementById("vv-menu-pg").style.display = "none";
+        document.getElementById("sf-menu-pg").style.display = "none";
+        document.getElementById("tf-menu-pg").style.display = "none";
+        document.getElementById("of-menu-pg").style.display = "none";
+        document.getElementById("ff-menu-pg").style.display = "none";
+
+        document.getElementById("vv-menu-dd").style.display = "none";
+        document.getElementById("sf-menu-dd").style.display = "none";
+        document.getElementById("tf-menu-dd").style.display = "none";
+        document.getElementById("of-menu-dd").style.display = "none";
+        document.getElementById("ff-menu-dd").style.display = "none";
+
+        document.getElementById("vv-menu-mr").style.display = "none";
+        document.getElementById("sf-menu-mr").style.display = "none";
+        document.getElementById("tf-menu-mr").style.display = "none";
+        document.getElementById("of-menu-mr").style.display = "none";
+        document.getElementById("ff-menu-mr").style.display = "none";
+
+        const locationDiv1 = document.getElementById('btLabel');
+        let borderActive1 = false;
+        const locationDiv2 = document.getElementById('pgLabel');
+        let borderActive2 = false;
+        const locationDiv3 = document.getElementById('ddLabel');
+        let borderActive3 = false;
+        const locationDiv4 = document.getElementById('mrLabel');
+        let borderActive4 = false;
+    
+        function ShowLocationMenu(){
+            var bt = document.getElementById("btRadio");
+            var pg = document.getElementById("pgRadio");
+            var dd = document.getElementById("ddRadio");
+            var mr = document.getElementById("mrRadio");
+
+            if (bt.checked != true){
+                document.getElementById("general-menu-bt").style.display = "none"; 
+                document.getElementById("btLabel").style.borderColor = "#4d68ad";
+                borderActive1 = false;
+            }
+            else{
+                document.getElementById("category-selector").style.display = "block";
+                document.getElementById("btLabel").style.borderColor = "#061b4e";
+                borderActive1 = true;
+                document.getElementById("general-menu-bt").style.display = "block";
+            }
+               
+
+            if (pg.checked != true){
+                document.getElementById("general-menu-pg").style.display = "none";
+                document.getElementById("pgLabel").style.borderColor = "#4d68ad";
+                borderActive2 = false;
+            }
+            else{
+                document.getElementById("category-selector").style.display = "block";
+                document.getElementById("pgLabel").style.borderColor = "#061b4e";
+                borderActive2 = true;
+                document.getElementById("general-menu-pg").style.display = "block";
+            }
+                
+
+            if (dd.checked != true){
+                document.getElementById("ddLabel").style.borderColor = "#4d68ad";
+                borderActive3 = false;
+                document.getElementById("general-menu-dd").style.display = "none";
+            }
+            else{
+                document.getElementById("category-selector").style.display = "block";
+                document.getElementById("ddLabel").style.borderColor = "#061b4e";
+                borderActive3 = true;
+                document.getElementById("general-menu-dd").style.display = "block";
+            }
+
+            if (mr.checked != true){
+                document.getElementById("mrLabel").style.borderColor = "#4d68ad";
+                borderActive4 = false;
+                document.getElementById("general-menu-mr").style.display = "none";
+            }
+            else{
+                document.getElementById("category-selector").style.display = "block";
+                document.getElementById("mrLabel").style.borderColor = "#061b4e";
+                borderActive4 = true;
+                document.getElementById("general-menu-mr").style.display = "block";
+            }
+        }
+
+        function filterFunctions(){
+
+            var vv = document.getElementById("VV");
+            var sf = document.getElementById("SF");
+            var tf = document.getElementById("TF");
+            var of = document.getElementById("OF");
+            var ff = document.getElementById("FF");
+            
+            document.getElementById("general-menu-bt").style.display = "none";
+            document.getElementById("general-menu-pg").style.display = "none";
+            document.getElementById("general-menu-dd").style.display = "none";
+            document.getElementById("general-menu-mr").style.display = "none";
+            
+            if (vv.checked == true){
+                if(document.getElementById("btRadio").checked == true)
+                    document.getElementById("vv-menu-bt").style.display = "block";
+                else 
+                    document.getElementById("vv-menu-bt").style.display = "none";
+
+                if(document.getElementById("pgRadio").checked == true)
+                    document.getElementById("vv-menu-pg").style.display = "block";
+                else 
+                    document.getElementById("vv-menu-pg").style.display = "none";
+
+                if(document.getElementById("ddRadio").checked == true)
+                    document.getElementById("vv-menu-dd").style.display = "block";
+                else 
+                    document.getElementById("vv-menu-dd").style.display = "none";
+
+                if(document.getElementById("mrRadio").checked == true)
+                    document.getElementById("vv-menu-mr").style.display = "block";
+                else 
+                    document.getElementById("vv-menu-mr").style.display = "none";
+            }
+            else{
+                document.getElementById("vv-menu-bt").style.display = "none";
+                document.getElementById("vv-menu-pg").style.display = "none";
+                document.getElementById("vv-menu-dd").style.display = "none";
+                document.getElementById("vv-menu-mr").style.display = "none";
+            }
+
+            if (ff.checked == true){
+                if(document.getElementById("btRadio").checked == true)
+                    document.getElementById("ff-menu-bt").style.display = "block";
+                else 
+                    document.getElementById("ff-menu-bt").style.display = "none";
+
+                if(document.getElementById("pgRadio").checked == true)
+                    document.getElementById("ff-menu-pg").style.display = "block";
+                else 
+                    document.getElementById("ff-menu-pg").style.display = "none";
+
+                if(document.getElementById("ddRadio").checked == true)
+                    document.getElementById("ff-menu-dd").style.display = "block";
+                else 
+                    document.getElementById("ff-menu-dd").style.display = "none";
+
+                if(document.getElementById("mrRadio").checked == true)
+                    document.getElementById("ff-menu-mr").style.display = "block";
+                else 
+                    document.getElementById("ff-menu-mr").style.display = "none";
+            }
+            else{
+                document.getElementById("ff-menu-bt").style.display = "none";
+                document.getElementById("ff-menu-pg").style.display = "none";
+                document.getElementById("ff-menu-dd").style.display = "none";
+                document.getElementById("ff-menu-mr").style.display = "none";
+            }
+
+            if (of.checked == true){
+                if(document.getElementById("btRadio").checked == true)
+                    document.getElementById("of-menu-bt").style.display = "block";
+                else 
+                    document.getElementById("of-menu-bt").style.display = "none";
+
+                if(document.getElementById("pgRadio").checked == true)
+                    document.getElementById("of-menu-pg").style.display = "block";
+                else 
+                    document.getElementById("of-menu-pg").style.display = "none";
+
+                if(document.getElementById("ddRadio").checked == true)
+                    document.getElementById("of-menu-dd").style.display = "block";
+                else 
+                    document.getElementById("of-menu-dd").style.display = "none";
+
+                if(document.getElementById("mrRadio").checked == true)
+                    document.getElementById("of-menu-mr").style.display = "block";
+                else 
+                    document.getElementById("of-menu-mr").style.display = "none";
+            }
+            else{
+                document.getElementById("of-menu-bt").style.display = "none";
+                document.getElementById("of-menu-pg").style.display = "none";
+                document.getElementById("of-menu-dd").style.display = "none";
+                document.getElementById("of-menu-mr").style.display = "none";
+            }
+
+            if (sf.checked == true){
+                if(document.getElementById("btRadio").checked == true)
+                    document.getElementById("sf-menu-bt").style.display = "block";
+                else 
+                    document.getElementById("sf-menu-bt").style.display = "none";
+
+                if(document.getElementById("pgRadio").checked == true)
+                    document.getElementById("sf-menu-pg").style.display = "block";
+                else 
+                    document.getElementById("sf-menu-pg").style.display = "none";
+
+                if(document.getElementById("ddRadio").checked == true)
+                    document.getElementById("sf-menu-dd").style.display = "block";
+                else 
+                    document.getElementById("sf-menu-dd").style.display = "none";
+
+                if(document.getElementById("mrRadio").checked == true)
+                    document.getElementById("sf-menu-mr").style.display = "block";
+                else 
+                    document.getElementById("sf-menu-mr").style.display = "none";
+            }
+            else{
+                document.getElementById("sf-menu-bt").style.display = "none";
+                document.getElementById("sf-menu-pg").style.display = "none";
+                document.getElementById("sf-menu-dd").style.display = "none";
+                document.getElementById("sf-menu-mr").style.display = "none";
+            }
+
+            if (tf.checked == true){
+                if(document.getElementById("btRadio").checked == true)
+                    document.getElementById("tf-menu-bt").style.display = "block";
+                else 
+                    document.getElementById("tf-menu-bt").style.display = "none";
+
+                if(document.getElementById("pgRadio").checked == true)
+                    document.getElementById("tf-menu-pg").style.display = "block";
+                else 
+                    document.getElementById("tf-menu-pg").style.display = "none";
+
+                if(document.getElementById("ddRadio").checked == true)
+                    document.getElementById("tf-menu-dd").style.display = "block";
+                else 
+                    document.getElementById("tf-menu-dd").style.display = "none";
+
+                if(document.getElementById("mrRadio").checked == true)
+                    document.getElementById("tf-menu-mr").style.display = "block";
+                else 
+                    document.getElementById("tf-menu-mr").style.display = "none";
+            }
+            else{
+                document.getElementById("tf-menu-bt").style.display = "none";
+                document.getElementById("tf-menu-pg").style.display = "none";
+                document.getElementById("tf-menu-dd").style.display = "none";
+                document.getElementById("tf-menu-mr").style.display = "none";
+            }
+            
+        }
+        
+        locationDiv1.addEventListener('click', () => {
+        if (borderActive1) {
+            locationDiv1.style.border = '5px solid #4d68ad';
+        } else {
+            locationDiv1.style.border = '5px solid #061b4e';
+            locationDiv2.style.border = '5px solid #4d68ad';
+            borderActive2 = false;
+            locationDiv3.style.border = '5px solid #4d68ad';
+            borderActive3 = false;
+            locationDiv4.style.border = '5px solid #4d68ad';
+            borderActive4 = false;
+        }
+        borderActive1 = !borderActive1;
+        });
+        locationDiv2.addEventListener('click', () => {
+        if (borderActive2) {
+            locationDiv2.style.border = '5px solid #4d68ad';
+        } else {
+            locationDiv2.style.border = '5px solid #061b4e';
+            locationDiv1.style.border = '5px solid #4d68ad';
+            borderActive1 = false;
+            locationDiv3.style.border = '5px solid #4d68ad';
+            borderActive3 = false;
+            locationDiv4.style.border = '5px solid #4d68ad';
+            borderActive4 = false;
+        }
+        borderActive2 = !borderActive2;
+        });
+        locationDiv3.addEventListener('click', () => {
+        if (borderActive3) {
+            locationDiv3.style.border = '5px solid #4d68ad';
+        } else {
+            locationDiv3.style.border = '5px solid #061b4e';
+            locationDiv2.style.border = '5px solid #4d68ad';
+            borderActive2 = false;
+            locationDiv1.style.border = '5px solid #4d68ad';
+            borderActive1 = false;
+            locationDiv4.style.border = '5px solid #4d68ad';
+            borderActive4 = false;
+        }
+        borderActive3 = !borderActive3;
+        });
+        locationDiv4.addEventListener('click', () => {
+        if (borderActive4) {
+            locationDiv4.style.border = '5px solid #4d68ad';
+        } else {
+            locationDiv4.style.border = '5px solid #061b4e';
+            locationDiv2.style.border = '5px solid #4d68ad';
+            borderActive2 = false;
+            locationDiv3.style.border = '5px solid #4d68ad';
+            borderActive3 = false;
+            locationDiv1.style.border = '5px solid #4d68ad';
+            borderActive1 = false;
+        }
+        borderActive4 = !borderActive4;
+        });
+
+        function highlight() {
+                var text = parseString(document.getElementById("search").value);
+                var foodItems = document.getElementsByName("item_name");
+                for(i = 0; i <= foodItems.length; i++){
+                    if(foodItems[i].textContent == text){
+                        var offset = $(foodItems[i]).offset().top;
+                        window.scrollTo(0,offset);
+                        document.getElementById("search").value = "chutiya";
+                    }
+                }
+            }
+    </script>
+    
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "orders/base.htm" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+    <section class="banner">
+        <div class="container carousel-container">
+            <div class="carousel-wrppr">
+                <img src="static/Picturea/carousel-image-1.png" alt="" >
+                <img src="static/Picturea/carousel-image-2.png" alt="">
+                <img src="static/Picturea/carousel-image-3.png" alt="">
+                <img src="static/Picturea/carousel-image-4.png" alt="" >
+                <img src="static/Picturea/carousel-image-5.png" alt="" >
+               
+            </div>
+        </div>
+    </section>
+
+    <section class="cook-delecious">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-md-offset-1">
+                    <div class="first-image">
+                        <img src="{% static 'img/Beef-Tehari.jpg' %}" alt="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cook-content">
+                        <h4>We serve delicious</h4>
+                        <div class="contact-content">
+                            <span>You can call us on:</span>
+                            <h6>0314067878</h6>
+                        </div>
+                        <span>or</span>
+                        <div class="contact-content">
+                            <h6>shabrina@gmail.com</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="second-image">
+                        <img src="{% static 'img/alu_murgi.jpg' %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="service-item">
+                        <a href="{% url 'menu' %}">
+                        <img src="static/Picturea/vv.png" alt="Breakfast">
+                        <h4>ভাত-তরকারি</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="service-item">
+                        <a href="{% url 'menu' %}">
+                        <img src="static/Picturea/sflogo.png" alt="Lunch">
+                        <h4>স্ট্রিট ফুড</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="service-item">
+                        <a href="{% url 'menu' %}">
+                        <img src="static/Picturea/fflogo.jpg" alt="Dinner">
+                        <h4>ফাস্টফুড</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="service-item">
+                        <a href="{% url 'menu' %}">
+                        <img src="static/Picturea/tlogo.png" alt="Desserts">
+                        <h4>টং এর দোকান</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+{% endblock content %}
+<!-- Username: admin, Password: admin-->
